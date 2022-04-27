@@ -24,9 +24,14 @@ def toBook():
         if flag=='1':
             getBook()
         elif flag=='2':
-            addBook()
-        elif flag=='3':
             deleteBook()
+        elif flag=='3':
+            bookID()
+        elif flag=='4':
+            bookISBN()
+        elif flag=='5':
+            bookName()
+
     print("Return to main page...")
     time.sleep(2)
     os.system('cls')
@@ -36,8 +41,10 @@ def bookMenu():
     print("\t\t\t\t║             **Book**             ║")
     print("\t\t\t\t╠══════════════════════════════════╣")
     print("\t\t\t\t║      1 - Book List               ║")
-    print("\t\t\t\t║      2 - Add Book                ║")
-    print("\t\t\t\t║      3 - Delete Book             ║")
+    print("\t\t\t\t║      2 - Delete Book             ║")
+    print("\t\t\t\t║      3 - Track ID                ║")
+    print("\t\t\t\t║      4 - Track ISBN              ║")
+    print("\t\t\t\t║      5 - Track Name              ║")
     print("\t\t\t\t║      0 - Return                  ║")
     print("\t\t\t\t╚══════════════════════════════════╝\n")
 
@@ -53,24 +60,24 @@ def getBook():
     except pymysql.Error as e:
         print('Error: %d: %s' % (e.args[0], e.args[1]))
 
-def addBook():
-    try:
-        book_id=input('Book ID:')
-        book_name=input('Book name:')
-        ISBN=input('ISBN:')
-        publisher_id=input('Publisher id:')
-        author=input('Author:')
-        availability='Available'
-        cur = conn.cursor()
-
-
-        cur.close()
-        input('Press to continue...')
-        os.system('cls')
-        bookMenu()
-
-    except pymysql.Error as e:
-        print('Error: %d: %s' % (e.args[0], e.args[1]))
+# def addBook():
+#     try:
+#         user_name=input('User name:')
+#         while True:
+#             user_id=input('User ID:')
+#             if len(user_id)!=8:
+#                 print("Invalied Id, retry!")
+#             else: break
+#         cur = conn.cursor()
+#         query="insert into users values('"+user_id+"','"+user_name+"');"
+#         cur.execute(query)
+#         conn.commit()
+#         cur.close()
+#         input('Success, press to continue...')
+#         os.system('cls')
+#         userMenu()
+#     except pymysql.Error as e:
+#         print('Error: %d: %s' % (e.args[0], e.args[1]))
 
 def deleteBook():
     try:
@@ -93,7 +100,67 @@ def deleteBook():
     except pymysql.Error as e:
         print('Error: %d: %s' % (e.args[0], e.args[1]))
 
+def bookID():
+    try:
+        while True:
+            book_id=input('Book ID:')
+            if len(book_id)!=8:
+                print("Invalied Id, retry!")
+            else: break
+        cur = conn.cursor()
+        cur.callproc("track_book_by_id",(book_id,))
+        result=cur.fetchall()
+        if len(result)!=0:
+            print("{:10} {:50} {:30} {:}".format("book_id","book_name","author","availability"))
+            for book in result:
+                print("{:10} {:50} {:30} {:}".format(book["book_id"],book["book_name"],book["author"],book["availability"]))
+        else:
+            print("No result!")
+        cur.close()
+        input('Press to continue...')
+        os.system('cls')
+        bookMenu()
+    except pymysql.Error as e:
+        print('Error: %d: %s' % (e.args[0], e.args[1]))
 
+def bookISBN():
+    try:
+        book_isbn=input('Book ISBN:')
+        cur = conn.cursor()
+        cur.callproc("track_book_by_ISBN",(book_isbn,))
+        result=cur.fetchall()
+        if len(result)!=0:
+            print("{:15} {:50} {:30} {:}".format("ISBN","book_name","author","availability"))
+            for book in result:
+                print("{:15} {:50} {:30} {:}".format(book["ISBN"],book["book_name"],book["author"],book["availability"]))
+        else:
+            print("No result!")
+        cur.close()
+        cur.close()
+        input('Press to continue...')
+        os.system('cls')
+        bookMenu()
+    except pymysql.Error as e:
+        print('Error: %d: %s' % (e.args[0], e.args[1]))
+
+def bookName():
+    try:
+        book_name=input('Search book by keyword:')
+        cur = conn.cursor()
+        cur.callproc("track_book_by_name",(book_name,))
+        result=cur.fetchall()
+        if len(result)!=0:
+            print("{:10} {:50} {:42} {:}".format("book_id","book_name","author","availability"))
+            for book in result:
+                print("{:10} {:50} {:42} {:}".format(book["book_id"],book["book_name"],book["author"],book["availability"]))
+        else:
+            print("No result!")
+        cur.close()
+        input('Press to continue...')
+        os.system('cls')
+        bookMenu()
+    except pymysql.Error as e:
+        print('Error: %d: %s' % (e.args[0], e.args[1]))
 
 ######################### User ########################
 def toUser():
@@ -134,11 +201,23 @@ def getUser():
         print('Error: %d: %s' % (e.args[0], e.args[1]))
 
 def addUser():
-    user_name=input('User name:')
-    cur = conn.cursor()
-    query="insert into users(user_name) values('"+user_name+"');"
-    cur.execute(query)
-    conn.commit()
+    try:
+        user_name=input('User name:')
+        while True:
+            user_id=input('User ID:')
+            if len(user_id)!=8:
+                print("Invalied Id, retry!")
+            else: break
+        cur = conn.cursor()
+        query="insert into users values('"+user_id+"','"+user_name+"');"
+        cur.execute(query)
+        conn.commit()
+        cur.close()
+        input('Success, press to continue...')
+        os.system('cls')
+        userMenu()
+    except pymysql.Error as e:
+        print('Error: %d: %s' % (e.args[0], e.args[1]))
 
 def deleteUser():
     try:
@@ -161,28 +240,22 @@ def deleteUser():
     except pymysql.Error as e:
         print('Error: %d: %s' % (e.args[0], e.args[1]))
 
-######################### Borrow and Return ########################
+######################### Service ########################
 def toBorrowReturn():
     flag=1
     borrowMenu()
     while flag!='0':
         flag=input('Choose to continue:')
         if flag=='1':
-            getUser()
-        elif flag=='2':
             getBook()
-        elif flag=='3':
+        elif flag=='2':
             getRoom()
+        elif flag=='3':
+            borrowBook()
         elif flag=='4':
             returnBook()
         elif flag=='5':
-            borrowBook()
-        elif flag=='6':
-            returnBook()
-        elif flag=='7':
-            borrowRoom()
-        elif flag=='8':
-            returnRoom()
+            registerRoom()
     print("Return to main page...")
     time.sleep(2)
     os.system('cls')
@@ -191,13 +264,11 @@ def borrowMenu():
     print("\t\t\t\t╔══════════════════════════════════╗")
     print("\t\t\t\t║       **Borrow and Return**      ║")
     print("\t\t\t\t╠══════════════════════════════════╣")
-    print("\t\t\t\t║      1 - User List               ║")
-    print("\t\t\t\t║      2 - Book List               ║")
-    print("\t\t\t\t║      3 - Room List               ║")
-    print("\t\t\t\t║      5 - Borrow Book             ║")
-    print("\t\t\t\t║      6 - Return Book             ║")
-    print("\t\t\t\t║      7 - Borrow Room             ║")
-    print("\t\t\t\t║      8 - Return Room             ║")
+    print("\t\t\t\t║      1 - Book List               ║")
+    print("\t\t\t\t║      2 - Room List               ║")
+    print("\t\t\t\t║      3 - Borrow Book             ║")
+    print("\t\t\t\t║      4 - Return Book             ║")
+    print("\t\t\t\t║      5 - Register Room           ║")
     print("\t\t\t\t║      0 - Return                  ║")
     print("\t\t\t\t╚══════════════════════════════════╝\n")
 
@@ -273,7 +344,7 @@ def returnBook():
         print('Error: %d: %s' % (e.args[0], e.args[1]))
 
 
-def borrowRoom():
+def registerRoom():
     try:
         cur = conn.cursor()
         user_id=input('User ID:')
@@ -345,8 +416,8 @@ def recordsMenu():
     print("\t\t\t\t╔══════════════════════════════════╗")
     print("\t\t\t\t║           **Records**            ║")
     print("\t\t\t\t╠══════════════════════════════════╣")
-    print("\t\t\t\t║      1 - Borrow Records          ║")
-    print("\t\t\t\t║      2 - Room Records            ║")
+    print("\t\t\t\t║      1 - Book Borrow Records     ║")
+    print("\t\t\t\t║      2 - Room Register Records   ║")
     print("\t\t\t\t║      0 - Return                  ║")
     print("\t\t\t\t╚══════════════════════════════════╝\n")
 
@@ -358,7 +429,7 @@ def getBorrowRecords():
         print("{:<{}} {:<{}} {:<{}} {:<{}} {:<{}} {:<{}}".format("book_id",15,"user_id",15,"borrow_time",15,"estimated_end",15,"real_end",15,"penalty",15))
         for record in cur.fetchall():
             print('%-15s%-17s%-17s%-15s%-15s%s'%(record["book_id"],record["user_id"],record["borrow_time_start"], record["borrow_time_Estimated_end"],
-            record["borrow_time_real_end"] if record["borrow_time_real_end"] else 'None',record["penalty"] if record["penalty"] else 'None' ))
+            record["borrow_time_real_end"] if record["borrow_time_real_end"] else 'None',record["penalty"] ))
         cur.close()
     except pymysql.Error as e:
         print('Error: %d: %s' % (e.args[0], e.args[1]))
@@ -369,9 +440,9 @@ def getRoomRecords():
         cur = conn.cursor()
         select = "select * from user_room_record"
         cur.execute(select)
-        print("{:20} {:20} {:20} {:20} {:20} {:}".format("user_id","room_id","borrow_time","estimated_end","real_end","penalty"))
+        print("{:<{}} {:<{}} {:<{}} {:<{}} {:<{}}".format("room_id",15,"user_id",15,"start_time",15,"end_time",15,"date",15))
         for record in cur.fetchall():
-            print("{:20} {:20} {:20} {:20} {:20} {:}".format(record["book_id"],record["user_id"],record["borrow_time_start"],record["borrow_time_Estimated_end"],record["borrow_time_real_end"],record["penalty"]))
+            print('%-15s%-18s%-15s%-15s%-15s'%(record["room_id"],record["user_id"],str(record["start_time"])+':00', str(record["end_time"])+':00', record["date_current"]))
         cur.close()
     except pymysql.Error as e:
         print('Error: %d: %s' % (e.args[0], e.args[1]))
@@ -432,9 +503,9 @@ def toRoom():
         if flag=='1':
             getRoom()
         elif flag=='2':
-            addRoom()
+            getScreen()
         elif flag=='3':
-            deleteRoom()
+            getTable()
     print("Return to main page...")
     time.sleep(2)
     os.system('cls')
@@ -444,8 +515,8 @@ def roomMenu():
     print("\t\t\t\t║             **Room**             ║")
     print("\t\t\t\t╠══════════════════════════════════╣")
     print("\t\t\t\t║      1 - Room List               ║")
-    print("\t\t\t\t║      2 - Add Room                ║")
-    print("\t\t\t\t║      3 - Delete Room             ║")
+    print("\t\t\t\t║      2 - Screen List             ║")
+    print("\t\t\t\t║      3 - Table List              ║")
     print("\t\t\t\t║      0 - Return                  ║")
     print("\t\t\t\t╚══════════════════════════════════╝\n")
 
@@ -461,11 +532,29 @@ def getRoom():
     except pymysql.Error as e:
         print('Error: %d: %s' % (e.args[0], e.args[1]))
 
-def addRoom():
-    time.sleep(2)
+def getScreen():
+    try:
+        cur = conn.cursor()
+        select = "select * from screen"
+        cur.execute(select)
+        print("{:20}{:20}{:20}{:20}".format("screen_id","room_id","manufacturer","serial_number"))
+        for screen in cur.fetchall():
+            print("{:20}{:20}{:20}{:20}".format(screen["Screen_id"],screen["room_id"],screen["manufacturer"],screen["serial_number"]))
+        cur.close()
+    except pymysql.Error as e:
+        print('Error: %d: %s' % (e.args[0], e.args[1]))
 
-def deleteRoom():
-    time.sleep(2)
+def getTable():
+    try:
+        cur = conn.cursor()
+        select = "select * from study_table"
+        cur.execute(select)
+        print("{:20}{:20}{:20}".format("table_id","room_id","condition"))
+        for table in cur.fetchall():
+            print("{:20}{:20}{:20}".format(table["table_id"],table["room_id"],table["current_condition"]))
+        cur.close()
+    except pymysql.Error as e:
+        print('Error: %d: %s' % (e.args[0], e.args[1]))
 
 
 ######################### Main ########################
@@ -477,10 +566,10 @@ while flag!='0':
     print("\t\t\t\t╠══════════════════════════════════╣")
     print("\t\t\t\t║      1 - Book                    ║")
     print("\t\t\t\t║      2 - User                    ║")
-    print("\t\t\t\t║      3 - Borrow and return       ║")
-    print("\t\t\t\t║      4 - Publisher               ║")
+    print("\t\t\t\t║      3 - Booking Service         ║")
+    print("\t\t\t\t║      4 - Records                 ║")
     print("\t\t\t\t║      5 - Room                    ║")
-    print("\t\t\t\t║      6 - Records                 ║")
+    print("\t\t\t\t║      6 - Publisher               ║")
     print("\t\t\t\t║      0 - Quit                    ║")
     print("\t\t\t\t╚══════════════════════════════════╝\n")
     flag=input('Choose to continue:')
@@ -495,12 +584,12 @@ while flag!='0':
         toBorrowReturn()
     elif flag=='4':
         os.system('cls')
-        toPublisher()
+        toRecords()
     elif flag=='5':
         os.system('cls')
         toRoom()
     elif flag=='6':
         os.system('cls')
-        toRecords()
+        toPublisher()
 
 conn.close()
