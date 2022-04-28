@@ -511,6 +511,8 @@ def toRoom():
             getScreen()
         elif flag=='3':
             getTable()
+        elif flag=='4':
+            getSeat()
     print("Return to main page...")
     time.sleep(2)
     os.system('cls')
@@ -522,6 +524,7 @@ def roomMenu():
     print("\t\t\t\t║      1 - Room List               ║")
     print("\t\t\t\t║      2 - Screen List             ║")
     print("\t\t\t\t║      3 - Table List              ║")
+    print("\t\t\t\t║      4 - Seat List               ║")
     print("\t\t\t\t║      0 - Return                  ║")
     print("\t\t\t\t╚══════════════════════════════════╝\n")
 
@@ -561,6 +564,17 @@ def getTable():
     except pymysql.Error as e:
         print('Error: %d: %s' % (e.args[0], e.args[1]))
 
+def getSeat():
+    try:
+        cur = conn.cursor()
+        select = "select * from seat"
+        cur.execute(select)
+        print("{:20}{:20}{:20}".format("seat_id","room_id","condition"))
+        for table in cur.fetchall():
+            print("{:20}{:20}{:20}".format(table["seat_id"],table["room_id"],table["current_condition"]))
+        cur.close()
+    except pymysql.Error as e:
+        print('Error: %d: %s' % (e.args[0], e.args[1]))
 
 
 
