@@ -2,12 +2,12 @@ import pymysql
 import os
 import time
 import datetime
-print('Please provide the username and password:')
-username=input('username:')
-password=input('password:')
+# print('Please provide the username and password:')
+# username=input('username:')
+# password=input('password:')
 
 try:
-    conn = pymysql.connect(host='localhost', user=username, password=password,
+    conn = pymysql.connect(host='localhost', user='root', password='0000',
                           db='library', charset='utf8mb4',
                           cursorclass=pymysql.cursors.DictCursor)
 
@@ -193,11 +193,11 @@ def userMenu():
 def getUser():
     try:
         cur = conn.cursor()
-        select = "select * from user"
+        select = "select * from users"
         cur.execute(select)
-        print("{:20} {:20} {:20} {:}".format("user_id","user_name"))
+        print("{:20} {:20} ".format("user_id","user_name"))
         for user in cur.fetchall():
-            print("{:20} {:20} {:20} {:}".format(user["user_id"],user["user_name"]))
+            print("{:20} {:20} ".format(user["user_id"],user["user_name"]))
         cur.close()
     except pymysql.Error as e:
         print('Error: %d: %s' % (e.args[0], e.args[1]))
