@@ -2,12 +2,12 @@ import pymysql
 import os
 import time
 import datetime
-# print('Please provide the username and password:')
-# username=input('username:')
-# password=input('password:')
+print('Please provide the username and password:')
+username=input('username:')
+password=input('password:')
 
 try:
-    conn = pymysql.connect(host='localhost', user='root', password='0000',
+    conn = pymysql.connect(host='localhost', user=username, password=password,
                           db='library', charset='utf8mb4',
                           cursorclass=pymysql.cursors.DictCursor)
 
@@ -557,7 +557,7 @@ def getRoomDetail():
             os.system('cls')
             roomMenu()
         else:
-            cur.callproc("track_set_by_room",(room_id,))
+            cur.callproc("track_seat_by_room",(room_id,))
             print("{:20}{:20}{:20}".format("seat_id","room_id","condition"))
             for set in cur.fetchall():
                 print("{:20}{:20}{:20}".format(set["seat_id"],set["room_id"],set["current_condition"]))

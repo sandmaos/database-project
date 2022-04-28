@@ -191,13 +191,13 @@ $$;
 -- call check_room('1111111101');  
 
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------
--- tracking set by room
-create procedure track_set_by_room(IN room_input varchar(30))
+-- tracking seat by room
+create procedure track_seat_by_room(IN room_input varchar(30))
 BEGIN
 select * from seat where room_id=room_input;
 end
 $$;
--- call track_set_by_room('1111111101');  
+-- call track_seat_by_room('1111111101');  
 
 
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------
