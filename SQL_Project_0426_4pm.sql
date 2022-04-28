@@ -196,12 +196,3 @@ insert into Seat(seat_id,room_id,current_condition)values('Seat-0010','111111110
 insert into Seat(seat_id,room_id,current_condition)values('Seat-0011','1111111104','Perfect');
 insert into Seat(seat_id,room_id,current_condition)values('Seat-0012','1111111104','Perfect');
 insert into Seat(seat_id,room_id,current_condition)values('Seat-0013','1111111105','Good');
-
-
-
-
-
-
-
-
-
