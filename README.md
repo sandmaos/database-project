@@ -7,4 +7,4 @@ python db.py
 to install pymysql library, run
 ```
 pip insatll pymysql 
-``
+```
