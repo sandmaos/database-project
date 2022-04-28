@@ -25,6 +25,15 @@ drop procedure if exists track_study_room_by_seat;
 drop procedure if exists delete_user;
 drop procedure if exists delete_book;
 drop procedure if exists insert_room_record;
+drop procedure if exists add_publisher;
+drop procedure if exists add_document;
+drop procedure if exists print_document;
+drop procedure if exists check_room;
+drop procedure if exists track_set_by_room;
+drop procedure if exists track_table_by_room;
+drop procedure if exists track_screen_by_room;
+
+
 -- Borrowing Book Part
 
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -162,6 +171,53 @@ $$;
 -- call Return_book('20220101','10000005','2022-05-27',@state,@state_p);
 -- select * from Borrow_record;
 -- select * from book;
+
+
+
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------
+--  Check Room
+-- check room if exist
+create procedure check_room(IN room_input varchar(30),OUT state int)
+BEGIN
+DECLARE room_count int default 0; 
+select count(*) into room_count from study_room where room_id = room_input;
+if room_count>0 then
+	set state=1; -- have room
+else
+	set state=0; -- room not exist
+end if;
+end
+$$;
+-- call check_room('1111111101');  
+
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------
+-- tracking set by room
+create procedure track_set_by_room(IN room_input varchar(30))
+BEGIN
+select * from seat where room_id=room_input;
+end
+$$;
+-- call track_set_by_room('1111111101');  
+
+
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------
+-- tracking table by room
+create procedure track_table_by_room(IN room_input varchar(30))
+BEGIN
+select * from study_table where room_id=room_input;
+end
+$$;
+-- call track_table_by_room('1111111101');  
+
+
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------
+-- tracking screen by room
+create procedure track_screen_by_room(IN room_input varchar(30))
+BEGIN
+select * from screen where room_id=room_input;
+end
+$$;
+-- call track_screen_by_room('1111111101');  
 
 
 
@@ -320,3 +376,71 @@ $$;
 -- select * from study_room;
 -- select * from user_room_record;
 -- call insert_room_record('20220102','1111111103', '2022-02-22', '9', '10',@state);
+
+
+
+-- ------------------------------------------------------------------------------------------------------------------------------------
+create procedure add_publisher(IN publisher_id_input varchar(30), IN publisher_name_input varchar(30), IN phone_No_input varchar(30), OUT state int)
+BEGIN
+DECLARE publisher_count int;
+select count(*) into publisher_count from publisher where publisher_id = publisher_id_input;
+
+IF publisher_count = 0 THEN
+ insert into publisher(publisher_id,publisher_name,phone_No) values(publisher_id_input, publisher_name_input, phone_No_input);
+
+
+ELSE
+ SET state = 1; -- Already has this publisher
+ END IF;
+
+
+END
+$$;
+
+-- SET @state = 0;
+-- call add_publisher('111111111', 'AAAAAAAA', '123-432-4245', @state);
+-- select * from publisher;
+
+
+
+-- ------------------------------------------------------------------------------------------------------------------------------------
+create procedure add_document(IN user_id_input varchar(30), IN Document_name_input varchar(30), OUT state int)
+begin
+declare user_count int;
+select count(*) into user_count from users where user_id = user_id_input;
+IF user_count = 1 THEN
+ insert into Document(user_id,Document_name) values (user_id_input, Document_name_input);
+
+
+ELSE
+ SET state = 1; -- does not have this user
+    END IF;
+
+end
+$$;
+
+-- set @state = 0;
+-- call add_document('20220103','abcd',@state);
+-- select * from document;
+
+
+-- ------------------------------------------------------------------------------------------------------------------------------------
+create procedure print_document(IN document_id_input int, OUT state int)
+begin
+declare doc_count int;
+select count(*) into doc_count from Document where Document_id = document_id_input;
+
+IF doc_count >0 THEN
+ DELETE from Document where Document_id = document_id_input;
+    
+ELSE
+ SET state = 1; -- Does not have this document
+    END IF;
+
+end
+$$;
+
+-- set @state = 0;
+-- call print_document(5,@state);
+-- select * from document;
+

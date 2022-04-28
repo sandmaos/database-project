@@ -508,10 +508,12 @@ def toRoom():
         if flag=='1':
             getRoom()
         elif flag=='2':
-            getScreen()
+            getRoomDetail()
         elif flag=='3':
-            getTable()
+            getScreen()
         elif flag=='4':
+            getTable()
+        elif flag=='5':
             getSeat()
     print("Return to main page...")
     time.sleep(2)
@@ -522,9 +524,10 @@ def roomMenu():
     print("\t\t\t\t║             **Room**             ║")
     print("\t\t\t\t╠══════════════════════════════════╣")
     print("\t\t\t\t║      1 - Room List               ║")
-    print("\t\t\t\t║      2 - Screen List             ║")
-    print("\t\t\t\t║      3 - Table List              ║")
-    print("\t\t\t\t║      4 - Seat List               ║")
+    print("\t\t\t\t║      2 - Room Detail             ║")
+    print("\t\t\t\t║      3 - Screen List             ║")
+    print("\t\t\t\t║      4 - Table List              ║")
+    print("\t\t\t\t║      5 - Seat List               ║")
     print("\t\t\t\t║      0 - Return                  ║")
     print("\t\t\t\t╚══════════════════════════════════╝\n")
 
@@ -536,6 +539,40 @@ def getRoom():
         print("{:20}".format("room_id"))
         for room in cur.fetchall():
             print("{:20}".format(room["room_id"]))
+        cur.close()
+    except pymysql.Error as e:
+        print('Error: %d: %s' % (e.args[0], e.args[1]))
+
+def getRoomDetail():
+    try:
+        room_id=input("Room ID:")
+        cur = conn.cursor()
+        cur.callproc("check_room",(room_id,-1))
+        conn.commit()
+        cur.execute("select @_check_room_1")
+        flag=cur.fetchall()[0]['@_check_room_1']
+        if flag==0:
+            print("Room not found!")
+            input('Press to continue...')
+            os.system('cls')
+            roomMenu()
+        else:
+            cur.callproc("track_set_by_room",(room_id,))
+            print("{:20}{:20}{:20}".format("seat_id","room_id","condition"))
+            for set in cur.fetchall():
+                print("{:20}{:20}{:20}".format(set["seat_id"],set["room_id"],set["current_condition"]))
+            print('\n')
+            cur.callproc("track_table_by_room",(room_id,))
+            print("{:20}{:20}{:20}".format("table_id","room_id","condition"))
+            for table in cur.fetchall():
+                print("{:20}{:20}{:20}".format(table["table_id"],table["room_id"],table["current_condition"]))
+            print('\n')
+            cur.callproc("track_screen_by_room",(room_id,))
+            print("{:20}{:20}{:20}{:20}".format("screen_id","room_id","manufacturer","serial_number"))
+            for screen in cur.fetchall():
+                print("{:20}{:20}{:20}{:20}".format(screen["Screen_id"],screen["room_id"],screen["manufacturer"],screen["serial_number"]))
+            cur.close()
+
         cur.close()
     except pymysql.Error as e:
         print('Error: %d: %s' % (e.args[0], e.args[1]))
@@ -570,8 +607,8 @@ def getSeat():
         select = "select * from seat"
         cur.execute(select)
         print("{:20}{:20}{:20}".format("seat_id","room_id","condition"))
-        for table in cur.fetchall():
-            print("{:20}{:20}{:20}".format(table["seat_id"],table["room_id"],table["current_condition"]))
+        for set in cur.fetchall():
+            print("{:20}{:20}{:20}".format(set["seat_id"],set["room_id"],set["current_condition"]))
         cur.close()
     except pymysql.Error as e:
         print('Error: %d: %s' % (e.args[0], e.args[1]))
