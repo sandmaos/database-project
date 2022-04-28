@@ -14,6 +14,7 @@ python db.py
 Then provide the username and password to connect MySQL at port 3306.
 
 Main menu:
+```
 ╔══════════════════════════════════╗
 ║  **Welcome To Library System**   ║
 ╠══════════════════════════════════╣
@@ -26,6 +27,7 @@ Main menu:
 ║      7 - Files                   ║
 ║      0 - Quit                    ║
 ╚══════════════════════════════════╝
+```
 
 1. Book menu allows admin to search books by ISBN, keyword and book_id, also allows admin to delete books.
 2. User menu allows admin to search user, add user and deletd user.
