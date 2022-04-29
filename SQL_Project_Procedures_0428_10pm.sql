@@ -19,7 +19,7 @@ drop procedure if exists track_book_by_id;
 drop procedure if exists track_book_by_name;
 drop procedure if exists Borrow_book;
 drop procedure if exists Return_book;
-drop procedure if exists  track_study_room_by_table;
+drop procedure if exists track_study_room_by_table;
 drop procedure if exists track_study_room_by_screen;
 drop procedure if exists track_study_room_by_seat;
 drop procedure if exists delete_user;
@@ -29,7 +29,7 @@ drop procedure if exists add_publisher;
 drop procedure if exists add_document;
 drop procedure if exists print_document;
 drop procedure if exists check_room;
-drop procedure if exists track_set_by_room;
+drop procedure if exists track_seat_by_room;
 drop procedure if exists track_table_by_room;
 drop procedure if exists track_screen_by_room;
 
@@ -188,7 +188,9 @@ else
 end if;
 end
 $$;
--- call check_room('1111111101');  
+
+
+-- call check_room('1111111101',@state); 
 
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------
 -- tracking seat by room

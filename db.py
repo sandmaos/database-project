@@ -2,7 +2,7 @@ import pymysql
 import os
 import time
 import datetime
-print('Please provide the username and password:')
+print('Connect to mysql server')
 username=input('username:')
 password=input('password:')
 
