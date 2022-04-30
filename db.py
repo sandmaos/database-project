@@ -2,7 +2,7 @@ import pymysql
 import os
 import time
 import datetime
-print('Connect to mysql server')
+print('Connect to mysql server...')
 username=input('username:')
 password=input('password:')
 
@@ -11,8 +11,9 @@ try:
                           db='library', charset='utf8mb4',
                           cursorclass=pymysql.cursors.DictCursor)
 
-except pymysql.err.OperationalError:
+except pymysql.err.OperationalError as e:
     print('Error: %d: %s' % (e.args[0], e.args[1]))
+    quit()
 
 
 ######################### Book ########################
@@ -33,7 +34,7 @@ def toBook():
             bookName()
 
     print("Return to main page...")
-    time.sleep(2)
+    time.sleep(1)
     os.system('cls')
 
 def bookMenu():
@@ -177,7 +178,7 @@ def toUser():
         elif flag=='3':
             deleteUser()
     print("Return to main page...")
-    time.sleep(2)
+    time.sleep(1)
     os.system('cls')
 
 def userMenu():
@@ -259,7 +260,7 @@ def toBorrowReturn():
         elif flag=='4':
             returnBook()
     print("Return to main page...")
-    time.sleep(2)
+    time.sleep(1)
     os.system('cls')
 
 def borrowMenu():
@@ -346,7 +347,7 @@ def toRegister():
         elif flag=='3':
             registerRoom()
     print("Return to main page...")
-    time.sleep(2)
+    time.sleep(1)
     os.system('cls')
 
 def registerMenu():
@@ -453,7 +454,7 @@ def toPublisher():
         elif flag=='2':
             addPublisher()
     print("Return to main page...")
-    time.sleep(2)
+    time.sleep(1)
     os.system('cls')
 
 def publisherMenu():
@@ -516,7 +517,7 @@ def toRoom():
         elif flag=='5':
             getSeat()
     print("Return to main page...")
-    time.sleep(2)
+    time.sleep(1)
     os.system('cls')
 
 def roomMenu():
@@ -628,7 +629,7 @@ def toDoc():
         elif flag=='3':
             delDoc()
     print("Return to main page...")
-    time.sleep(2)
+    time.sleep(1)
     os.system('cls')
 
 def docMenu():

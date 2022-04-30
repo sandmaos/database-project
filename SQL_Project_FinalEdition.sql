@@ -1,7 +1,7 @@
 /*
 This file is initiality created in 21st APR 2022. Northeastern University CS5200 Database Management Systems Final Project
 Authors: Xiangyu Zeng, Xinyu Wan, Lianrui Yang
-Time: 26th APR 2022    02:08
+Time: Apr 28th 2022
 
 Description: The whole project contains tables(this file), procedires and python user interface.
 			 In this file, a library database and its entities are created.
@@ -32,7 +32,7 @@ create table if not exists publisher(
 publisher_id varchar(30) primary key,
 publisher_name varchar(30),
 phone_No varchar(30)
-); -- 3个出版社 3、2、1本书
+);
 
 insert into publisher(publisher_id,publisher_name,phone_No) values('1000001','Pearson','123-235-3456');
 insert into publisher(publisher_id,publisher_name,phone_No) values('1000002','Macmillan','576-567-8578');
@@ -43,7 +43,8 @@ insert into publisher(publisher_id,publisher_name,phone_No) values('1000005','Ca
 create table if not exists Users(
 user_id varchar(30) primary key,
 user_name varchar(30)
-); -- 3个人和图书馆id
+);
+-- Library id and 3 users
 insert into users(user_id,user_name) values('00000001','Library');
 insert into users(user_id,user_name) values('20220101','Lianrui Yang');
 insert into users(user_id,user_name) values('20220102','Xinyu Wan');
@@ -62,10 +63,10 @@ foreign key (publisher_id) references publisher (publisher_id)
 		ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-ALTER TABLE book ADD INDEX indext_ISBN(ISBN); -- Identifying fields for secondary indexes.
+-- ALTER TABLE book ADD INDEX indext_ISBN(ISBN); -- Identifying fields for secondary indexes.
 
 
--- 10本书，1个人最多借5
+-- 10 books, one user can borrow up to 5 books 
 insert into Book(book_id,book_name,ISBN,publisher_id,author,availability) 
 values('10000001','Data and Computer Communications','9780137561704','1000001','William Stallings','Available');
 insert into Book(book_id,book_name,ISBN,publisher_id,author,availability) 
@@ -196,3 +197,12 @@ insert into Seat(seat_id,room_id,current_condition)values('Seat-0010','111111110
 insert into Seat(seat_id,room_id,current_condition)values('Seat-0011','1111111104','Perfect');
 insert into Seat(seat_id,room_id,current_condition)values('Seat-0012','1111111104','Perfect');
 insert into Seat(seat_id,room_id,current_condition)values('Seat-0013','1111111105','Good');
+
+
+
+
+
+
+
+
+

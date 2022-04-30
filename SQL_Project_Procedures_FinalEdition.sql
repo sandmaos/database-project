@@ -1,7 +1,7 @@
 /*
 This file is initiality created in 22nd APR 2022. Northeastern University CS5200 Database Management Systems Final Project
 Authors: Xiangyu Zeng, Xinyu Wan, Lianrui Yang
-Time: 26th APR 2022    02:08
+Time: Apr 28th 2022
 
 Description: The whole project contains tables, procedires(this file) and python user interface.
 			 In this file, procedures that provide functions are created. After each procedure,
@@ -9,6 +9,24 @@ Description: The whole project contains tables, procedires(this file) and python
              procedures can return state. A state is a flag that help user finding errors.
 
 */
+
+-- Examples
+-- set @state = 0;
+-- set @state_p = 6;
+-- -- Add Tuples
+-- select * from publisher;
+-- call add_publisher('1000006', 'Test_Publisher', '123-432-4245', @state);
+-- -- Delete Tuples
+-- select * from users;
+-- call delete_user('20220101', @state);
+-- -- Update
+-- select * from Borrow_record;
+-- call Borrow_book('20220103','10000006','2022-04-23','2022-04-27',@state);
+-- call Return_book('20220103','10000006','2022-04-26',@state,@state_p);
+-- -- Check Tuples
+-- call track_book_by_name('computer');
+
+
 
 USE library;
 delimiter $$;
@@ -32,6 +50,8 @@ drop procedure if exists check_room;
 drop procedure if exists track_seat_by_room;
 drop procedure if exists track_table_by_room;
 drop procedure if exists track_screen_by_room;
+-- TOTALLY 18 PROCEDURES
+
 
 
 -- Borrowing Book Part
@@ -66,12 +86,16 @@ $$;
 -- call track_book_by_name('computer');
 
 
--- II. Borrow a Book 借书
+-- II. Borrow a Book
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Borrow a Book
 create procedure Borrow_book(IN user_id_input varchar(30), IN book_id_input varchar(30), IN borrow_start_time_input date, IN borrow_estimated_end_time_input date, OUT state int)
 BEGIN
--- 1.检查是否存在用户  2.检查用户是否超过5本 3.检查这本书是否可用 4.生成record，把信息userid bookid 开始时间 预计结束时间 填进去 5.把bookid下的availability变成Nonavaibalbe
+-- 1. Check whether the user exists.
+-- 2. Check whether the user borrows more than 5 books
+-- 3. Check if the book exists and is available
+-- 4. Generate record and fill in userID Bookid, start time, expected end time
+-- 5. Alter availability under Bookid to 'Not Available'
 DECLARE user_count int default 0; 
 DECLARE book_count int default 0;
 DECLARE user_book_count int default 0;
@@ -118,10 +142,14 @@ $$;
 
 
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------
--- Return a Book 还书
+-- Return a Book
 create procedure Return_book(IN user_id_input varchar(30), IN book_id_input varchar(30), IN borrow_time_real_end_input date, OUT state int, OUT state_penality int)
 BEGIN
--- 1.检查是否存在用户  2.改写record，在所有没有实际结束时间的record中判断userid bookid  3.填实际结束时间 4.判断是否有罚款 并写入 5.把bookid下的availability变成Avaibalbe
+-- 1. Check whether the user exists
+-- 2. Check userID and BooKID in all records that have no borrow_time_real_end in the borrow record
+-- 3. Update the real end time into the record
+-- 4. Determine whether there is a penalty and update into the record
+-- 5. Change Bookid Availability to 'Avaibalbe'
 DECLARE user_count int default 0; 
 DECLARE book_count int default 0;
 DECLARE user_record_count int default 0;
@@ -267,8 +295,7 @@ $$;
 -- call track_study_room_by_table(1);
 
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------
- --  ---------------------- 删除用户或书。请注意，因为还没有借用学习室部分的代码，删除用户部分，需要等学习室部分代码写完后再更改
- -- 				 		具体更改内容是：在Remove this user from user table 之前删除所有和该学生有关的学习室record。除此之外，还需要先检查该学生是否有未归还的学习室。
+
 -- Eliminate USER
 
 create procedure delete_user(IN user_id_input varchar(30), OUT state int)
